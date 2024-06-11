@@ -1,0 +1,55 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock%}
+
+{% block breadcrumbs %}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>ผลการดำเนินงาน</h2>
+            </div>
+        </div>
+    </section><!-- End Breadcrumbs -->
+{% endblock %}
+
+
+{% block content %}
+<h2> ({{ category_group.group_name }}) :{{ category_group.group_description }}</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        {% for category in categories %}
+            <tr class="table-success">
+                <td colspan="2" id="category-{{ category.category_id }}"><h3>หมวดที่ {{ category.category_name }}: {{ category.category_description }}</h3></td>
+            </tr>
+            {% for issue in category.issues.all %}
+                <tr class="table-info">
+                    <td colspan="2" id="issue-{{ issue.issue_id }}"><h4>ประเด็น {{ issue.issue_name }}: {{ issue.issue_description }}</h4></td>
+                </tr>
+                <tr class="table-secondary">
+                    <td ><h5>ตัวชี้วัด</h5></td>
+                    <td ><h5>ผลการดำเนินงาน/เอกสารหลักฐาน</h5></td>
+                    
+                </tr>
+                {% for indicator in issue.indicators.all %}
+                    <tr class="table-light">
+                        <td style="width: 50%;" id="indicator-{{ indicator.indicator_id }}"><strong>{{ indicator.indicator_name }}</strong>: {{ indicator.indicator_description|linebreaksbr }}</td>
+                        <td style="width: 50%;">
+                            <ul>
+                                {% for evidence in indicator.evidences.all %}
+                                    <li id="evidence-{{ evidence.evidence_id }}">{{ evidence.evidence_description }}   เอกสารแนบ<a href="{{ evidence.evidence_file.url }}" target="_blank">{{ evidence.evidence_name }}</a> </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+

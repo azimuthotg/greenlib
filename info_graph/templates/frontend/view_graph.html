@@ -1,0 +1,149 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+  NPU Green Library - Index
+{% endblock %}
+
+{% block style %}
+<style>
+    .chart-container {
+        width: 100%;
+        height: 300px;
+        margin: 10px 0;
+    }
+    canvas {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center my-4">ข้อมูลการใช้พลังงานและทรัพยากร ปี 2567</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="greenhouseGasChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="electricityChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="dieselChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="waterChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="landfillWasteChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="paperA4A3Chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table to display the data -->
+    <h2 class="text-center my-4">สรุปข้อมูลการใช้พลังงานและทรัพยากร ปี 2567</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>เดือน</th>
+                    <th>ก๊าซเรือนกระจก (kgCO2e)</th>
+                    <th>ไฟฟ้า (kWh)</th>
+                    <th>น้ำมันดีเซล (L)</th>
+                    <th>น้ำ (m3)</th>
+                    <th>ขยะทั่วไป(ฝังกลบ) (kg)</th>
+                    <th>กระดาษ A4/A3 (kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data_entries %}
+                <tr>
+                    <td>{{ entry.month.month_name }}</td>
+                    <td>{{ entry.greenhouse_gas }}</td>
+                    <td>{{ entry.electricity }}</td>
+                    <td>{{ entry.diesel }}</td>
+                    <td>{{ entry.water }}</td>
+                    <td>{{ entry.landfill_waste }}</td>
+                    <td>{{ entry.paper_a4_a3 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Embedding the data using json_script -->
+    <script id="labels-data" type="application/json">{{ labels|safe }}</script>
+    <script id="greenhouse-gas-data" type="application/json">{{ greenhouse_gas_data|safe }}</script>
+    <script id="electricity-data" type="application/json">{{ electricity_data|safe }}</script>
+    <script id="diesel-data" type="application/json">{{ diesel_data|safe }}</script>
+    <script id="water-data" type="application/json">{{ water_data|safe }}</script>
+    <script id="landfill-waste-data" type="application/json">{{ landfill_waste_data|safe }}</script>
+    <script id="paper-a4-a3-data" type="application/json">{{ paper_a4_a3_data|safe }}</script>
+
+    <script>
+        // Retrieve the embedded JSON data
+        const labels = JSON.parse(document.getElementById('labels-data').textContent);
+        const greenhouseGasData = JSON.parse(document.getElementById('greenhouse-gas-data').textContent);
+        const electricityData = JSON.parse(document.getElementById('electricity-data').textContent);
+        const dieselData = JSON.parse(document.getElementById('diesel-data').textContent);
+        const waterData = JSON.parse(document.getElementById('water-data').textContent);
+        const landfillWasteData = JSON.parse(document.getElementById('landfill-waste-data').textContent);
+        const paperA4A3Data = JSON.parse(document.getElementById('paper-a4-a3-data').textContent);
+
+        // Function to create a chart
+        function createChart(ctx, label, data, backgroundColor, borderColor) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create each chart
+        createChart(document.getElementById('greenhouseGasChart'), 'ก๊าซเรือนกระจก (kgCO2e)', greenhouseGasData, 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)');
+        createChart(document.getElementById('electricityChart'), 'ไฟฟ้า (kWh)', electricityData, 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)');
+        createChart(document.getElementById('dieselChart'), 'ดีเซล (L)', dieselData, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+        createChart(document.getElementById('waterChart'), 'น้ำ (m3)', waterData, 'rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)');
+        createChart(document.getElementById('landfillWasteChart'), 'ของเสียฝังกลบ (kg)', landfillWasteData, 'rgba(255, 159, 64, 0.2)', 'rgba(255, 159, 64, 1)');
+        createChart(document.getElementById('paperA4A3Chart'), 'กระดาษ A4/A3 (Kg,1รีม=2.5Kg)', paperA4A3Data, 'rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)');
+    </script>
+
+{% endblock %}
