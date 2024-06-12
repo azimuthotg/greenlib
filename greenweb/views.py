@@ -72,9 +72,18 @@ def blog_detail(request,id_blog):
 
 def blog_list(request):
     informations = Information.objects.all().order_by('-date')
+    for info in informations:
+        info.thai_date = thai_date(info.date)
     return render(request, 'frontend/blog_list.html', {'informations': informations})
 
 def blog_detail(request, pk):
     information = Information.objects.get(pk=pk)
     return render(request, 'frontend/blog_detail.html', {'information': information})
 
+def thai_date(date):
+    months = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+    ]
+    # แปลงวันที่เป็นรูปแบบไทย (วัน เดือน พ.ศ.)
+    return "{} {} {}".format(date.day, months[date.month - 1], date.year + 543)  # บวก 543 เพื่อแปลงปี ค.ศ. เป็น พ.ศ.

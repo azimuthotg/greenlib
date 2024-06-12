@@ -26,11 +26,20 @@
 {% endblock%}
 
 {% block content %}
-<ul>
-    {% for info in informations %}
-        <li>
-            <a href="{% url 'blog_detail' info.pk %}">{{ info.title }}</a> - {{ info.date }}
-        </li>
-    {% endfor %}
-</ul>
+<div class="container mt-5">
+    <div class="row">
+        {% for info in informations %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ info.image1.url }}" class="card-img-top" alt="{{ info.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ info.title }}</h5>
+                    <p class="card-text">วันที่ {{ info.thai_date }} เวลา {{ info.time}}</p>
+                    <a href="{% url 'blog_detail' info.pk %}" class="btn btn-link">อ่านต่อ</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+<br>
 {% endblock %}
