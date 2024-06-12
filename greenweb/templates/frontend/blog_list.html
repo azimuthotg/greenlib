@@ -35,6 +35,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ info.title }}</h5>
                     <p class="card-text">วันที่ {{ info.thai_date }} เวลา {{ info.time}}</p>
+                    <p>{{info.subtitle}}</p>
                     <a href="{% url 'blog_detail' info.pk %}" class="btn btn-link">อ่านต่อ</a>
                 </div>
             </div>
