@@ -1,0 +1,43 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock %}
+
+{% block breadcrumbs%}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><a href="{% url 'view_document' %}">เอกสาร/ฐานข้อมูล</a></h2>
+        </div>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+{% endblock%}
+{% block style %}
+<style>
+    /* รีเซ็ต margin และ padding */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    /* ปรับความสูงของ iframe ให้เต็มจอ */
+    iframe {
+        width: 100%;
+        height: 100vh; /* ปรับจาก 90vh เป็น 100vh */
+        border: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <p>
+        <iframe src="{{pdf_url}}" title="PDF Viewer"></iframe>
+    </p> 
+{% endblock %}

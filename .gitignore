@@ -1,0 +1,5 @@
+# Virtualenv
+venv/
+greenlib_env/
+
+greenlib/attachments/

@@ -1,0 +1,571 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+  NPU Green Library - Index
+{% endblock %}
+
+{% block style %}
+<style>
+    .chart-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        height: auto; /* เพิ่มส่วนนี้ */
+    }
+    .chart-container {
+        width: 100%;
+        height: 250px;
+        margin-bottom: 5px;
+    }
+    .chart-title {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #eee;
+    }
+    .detail-link {
+        text-align: center;
+        margin-top: 5px;
+    }
+    .detail-button {
+        padding: 8px 15px;
+        background-color: #5cb85c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    .detail-button:hover {
+        background-color: #4cae4c;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    canvas {
+        display: block;
+    }
+    .table thead th {
+        text-align: center;
+        vertical-align: middle;
+        background-color: #f8f9fa;
+        width: 14.28%;  /* 100% หารด้วย 7 คอลัมน์ */
+    }
+    
+    .table tbody td {
+        text-align: right;
+    }
+    
+    .table tbody td:first-child {
+        text-align: left;
+    }
+
+    /* ปรับความกว้างตารางให้เต็ม */
+    .table {
+        width: 100%;
+        table-layout: auto;
+        margin-bottom: 0;
+    }
+    
+    /* สไตล์สำหรับตารางใหม่ */
+    .resource-header {
+        background-color: #2e7d32 !important;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        min-width: 200px;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+    }
+    
+    .month-header {
+        background-color: #4caf50 !important;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        min-width: 90px;
+        font-size: 0.9rem;
+    }
+    
+    .resource-label {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        text-align: left;
+        vertical-align: middle;
+        padding: 12px 15px;
+        border-right: 2px solid #dee2e6;
+        position: sticky;
+        left: 0;
+        z-index: 5;
+    }
+    
+    .data-cell {
+        text-align: right;
+        vertical-align: middle;
+        padding: 10px 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        min-width: 90px;
+    }
+    
+    /* สีพื้นหลังสำหรับแต่ละประเภททรัพยากร */
+    .greenhouse-row:hover {
+        background-color: rgba(255, 99, 132, 0.1) !important;
+    }
+    
+    .electricity-row:hover {
+        background-color: rgba(54, 162, 235, 0.1) !important;
+    }
+    
+    .diesel-row:hover {
+        background-color: rgba(75, 192, 192, 0.1) !important;
+    }
+    
+    .water-row:hover {
+        background-color: rgba(153, 102, 255, 0.1) !important;
+    }
+    
+    .waste-row:hover {
+        background-color: rgba(255, 159, 64, 0.1) !important;
+    }
+    
+    .paper-row:hover {
+        background-color: rgba(255, 206, 86, 0.1) !important;
+    }
+    
+    /* Responsive design สำหรับหน้าจอเล็ก */
+    @media (max-width: 768px) {
+        .month-header {
+            font-size: 0.7rem;
+            padding: 8px 4px;
+            min-width: 60px;
+        }
+        
+        .data-cell {
+            font-size: 0.7rem;
+            padding: 8px 4px;
+            min-width: 60px;
+        }
+        
+        .resource-label {
+            font-size: 0.8rem;
+            padding: 10px 8px;
+            min-width: 150px;
+        }
+    }
+    
+    /* เพิ่มเงาและขอบให้ตาราง */
+    .table-responsive {
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow-x: auto;
+    }
+    
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.05);
+    }
+    
+    /* สไตล์สำหรับคอลัมน์สรุป */
+    .summary-header {
+        background-color: #1b5e20 !important;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        min-width: 100px;
+        font-size: 0.9rem;
+    }
+    
+    .summary-cell {
+        text-align: right;
+        vertical-align: middle;
+        padding: 10px 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        font-weight: bold;
+        border-left: 2px solid #dee2e6;
+    }
+    
+    .total-cell {
+        background-color: #e8f5e8;
+        color: #2e7d32;
+    }
+    
+    .avg-cell {
+        background-color: #fff3e0;
+        color: #f57c00;
+    }
+    
+    /* Responsive สำหรับคอลัมน์สรุป */
+    @media (max-width: 768px) {
+        .summary-header {
+            font-size: 0.7rem;
+            padding: 8px 4px;
+            min-width: 70px;
+        }
+        
+        .summary-cell {
+            font-size: 0.7rem;
+            padding: 8px 4px;
+            min-width: 70px;
+        }
+    }
+    
+    /* Year Tabs Styling */
+    #yearTabs .nav-link {
+        color: #2e7d32;
+        border: 2px solid #2e7d32;
+        background-color: white;
+        font-weight: 600;
+        padding: 10px 20px;
+        margin: 0 5px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    #yearTabs .nav-link:hover {
+        background-color: #2e7d32;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+    }
+    
+    #yearTabs .nav-link.active {
+        background-color: #2e7d32;
+        color: white;
+        border-color: #2e7d32;
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+    }
+    
+    #yearTabs {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container pb-5">
+    <div class="d-flex justify-content-center align-items-center mb-4">
+        <h1 class="text-center my-4">ข้อมูลการใช้พลังงานและทรัพยากร ปี {{ current_year }}</h1>
+    </div>
+
+    <!-- แท็บเลือกปี -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <ul class="nav nav-tabs" id="yearTabs" role="tablist">
+                    {% for year in available_years %}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link {% if year.year == current_year %}active{% endif %}" 
+                           href="#" 
+                           onclick="loadChartData({{ year.year }}); return false;"
+                           data-year="{{ year.year }}">
+                            ปี {{ year.year }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">ก๊าซเรือนกระจก (kgCO2e)</h3>
+                <div class="chart-container">
+                    <canvas id="greenhouseGasChart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('greenhouse')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">ไฟฟ้า (kWh)</h3>
+                <div class="chart-container">
+                    <canvas id="electricityChart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('electricity')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">ดีเซล (L)</h3>
+                <div class="chart-container">
+                    <canvas id="dieselChart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('diesel')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">น้ำ (m3)</h3>
+                <div class="chart-container">
+                    <canvas id="waterChart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('water')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">ขยะฝังกลบ (kg)</h3>
+                <div class="chart-container">
+                    <canvas id="landfillWasteChart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('landfill')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <h3 class="chart-title">กระดาษ A4/A3 (kg)</h3>
+                <div class="chart-container">
+                    <canvas id="paperA4A3Chart"></canvas>
+                </div>
+                <div class="detail-link">
+                    <a href="#" onclick="goToDetail('paper')" class="detail-button">ดูรายละเอียดเพิ่มเติม</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table to display the data -->
+    <div class="chart-card mt-4 mb-5">
+        <h2 class="text-center mb-4">สรุปข้อมูลการใช้พลังงานและทรัพยากร ปี {{ current_year }}</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="resource-header">ประเภททรัพยากร</th>
+                        {% for entry in data_entries %}
+                        <th class="month-header">{{ entry.month.month_name }}</th>
+                        {% endfor %}
+                        <th class="summary-header">รวม</th>
+                        <th class="summary-header">เฉลี่ย/เดือน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="resource-row greenhouse-row">
+                        <td class="resource-label">ก๊าซเรือนกระจก (kgCO2e)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.greenhouse_gas|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.greenhouse_gas|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.greenhouse_gas|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr class="resource-row electricity-row">
+                        <td class="resource-label">ไฟฟ้า (kWh)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.electricity|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.electricity|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.electricity|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr class="resource-row diesel-row">
+                        <td class="resource-label">น้ำมันดีเซล (L)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.diesel|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.diesel|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.diesel|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr class="resource-row water-row">
+                        <td class="resource-label">น้ำ (m3)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.water|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.water|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.water|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr class="resource-row waste-row">
+                        <td class="resource-label">ขยะทั่วไป(ฝังกลบ) (kg)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.landfill_waste|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.landfill_waste|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.landfill_waste|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr class="resource-row paper-row">
+                        <td class="resource-label">กระดาษ A4/A3 (kg)</td>
+                        {% for entry in data_entries %}
+                        <td class="data-cell">{{ entry.paper_a4_a3|floatformat:2|intcomma }}</td>
+                        {% endfor %}
+                        <td class="summary-cell total-cell">{{ totals.paper_a4_a3|floatformat:2|intcomma }}</td>
+                        <td class="summary-cell avg-cell">{{ averages.paper_a4_a3|floatformat:2|intcomma }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Embedding the data using json_script -->
+    <script id="labels-data" type="application/json">{{ labels|safe }}</script>
+    <script id="greenhouse-gas-data" type="application/json">{{ greenhouse_gas_data|safe }}</script>
+    <script id="electricity-data" type="application/json">{{ electricity_data|safe }}</script>
+    <script id="diesel-data" type="application/json">{{ diesel_data|safe }}</script>
+    <script id="water-data" type="application/json">{{ water_data|safe }}</script>
+    <script id="landfill-waste-data" type="application/json">{{ landfill_waste_data|safe }}</script>
+    <script id="paper-a4-a3-data" type="application/json">{{ paper_a4_a3_data|safe }}</script>
+
+    <script>
+        // Retrieve the embedded JSON data (use let for mutable variables)
+        let labels = JSON.parse(document.getElementById('labels-data').textContent);
+        let greenhouseGasData = JSON.parse(document.getElementById('greenhouse-gas-data').textContent);
+        let electricityData = JSON.parse(document.getElementById('electricity-data').textContent);
+        let dieselData = JSON.parse(document.getElementById('diesel-data').textContent);
+        let waterData = JSON.parse(document.getElementById('water-data').textContent);
+        let landfillWasteData = JSON.parse(document.getElementById('landfill-waste-data').textContent);
+        let paperA4A3Data = JSON.parse(document.getElementById('paper-a4-a3-data').textContent);
+
+        // Store chart instances globally
+        let chartInstances = {};
+
+        // Function to create a chart
+        function createChart(ctx, chartId, label, data, backgroundColor, borderColor) {
+            // Destroy existing chart if it exists
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+
+            chartInstances[chartId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Function to initialize all charts
+        function initializeCharts() {
+            createChart(document.getElementById('greenhouseGasChart'), 'greenhouse', 'ก๊าซเรือนกระจก (kgCO2e)', greenhouseGasData, 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)');
+            createChart(document.getElementById('electricityChart'), 'electricity', 'ไฟฟ้า (kWh)', electricityData, 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)');
+            createChart(document.getElementById('dieselChart'), 'diesel', 'ดีเซล (L)', dieselData, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+            createChart(document.getElementById('waterChart'), 'water', 'น้ำ (m3)', waterData, 'rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)');
+            createChart(document.getElementById('landfillWasteChart'), 'landfill', 'ขยะฝังกลบ (kg)', landfillWasteData, 'rgba(255, 159, 64, 0.2)', 'rgba(255, 159, 64, 1)');
+            createChart(document.getElementById('paperA4A3Chart'), 'paper', 'กระดาษ A4/A3 (Kg,1รีม=2.5Kg)', paperA4A3Data, 'rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)');
+        }
+
+        // Function to load chart data via AJAX
+        function loadChartData(year) {
+            // Show loading indicator
+            const yearTitle = document.querySelector('h1');
+            const tableTitle = document.querySelector('h2');
+            const originalTitle = yearTitle.textContent;
+            const originalTableTitle = tableTitle.textContent;
+            yearTitle.textContent = 'กำลังโหลดข้อมูล...';
+
+            // Update active tab
+            document.querySelectorAll('#yearTabs .nav-link').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`#yearTabs .nav-link[data-year="${year}"]`).classList.add('active');
+
+            // AJAX request
+            fetch(`/info_graph/?year=${year}`)
+                .then(response => response.text())
+                .then(html => {
+                    // Parse the response to extract JSON data
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Extract new data from the response
+                    const newLabels = JSON.parse(doc.getElementById('labels-data').textContent);
+                    const newGreenhouseGasData = JSON.parse(doc.getElementById('greenhouse-gas-data').textContent);
+                    const newElectricityData = JSON.parse(doc.getElementById('electricity-data').textContent);
+                    const newDieselData = JSON.parse(doc.getElementById('diesel-data').textContent);
+                    const newWaterData = JSON.parse(doc.getElementById('water-data').textContent);
+                    const newLandfillWasteData = JSON.parse(doc.getElementById('landfill-waste-data').textContent);
+                    const newPaperA4A3Data = JSON.parse(doc.getElementById('paper-a4-a3-data').textContent);
+
+                    // Update global variables
+                    labels = newLabels;
+                    greenhouseGasData = newGreenhouseGasData;
+                    electricityData = newElectricityData;
+                    dieselData = newDieselData;
+                    waterData = newWaterData;
+                    landfillWasteData = newLandfillWasteData;
+                    paperA4A3Data = newPaperA4A3Data;
+
+                    // Update titles
+                    yearTitle.textContent = `ข้อมูลการใช้พลังงานและทรัพยากร ปี ${year}`;
+                    tableTitle.textContent = `สรุปข้อมูลการใช้พลังงานและทรัพยากร ปี ${year}`;
+
+                    // Update table content
+                    const newTableBody = doc.querySelector('tbody');
+                    const newTableHeader = doc.querySelector('thead tr');
+                    document.querySelector('tbody').innerHTML = newTableBody.innerHTML;
+                    document.querySelector('thead tr').innerHTML = newTableHeader.innerHTML;
+
+                    // Recreate charts with new data
+                    initializeCharts();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+                    yearTitle.textContent = originalTitle;
+                    tableTitle.textContent = originalTableTitle;
+                });
+        }
+
+        // Initialize charts on page load
+        initializeCharts();
+
+        // Function to navigate to detail page with current year
+        function goToDetail(resourceType) {
+            // Get current active year from the tab
+            const activeTab = document.querySelector('#yearTabs .nav-link.active');
+            const currentYear = activeTab ? activeTab.getAttribute('data-year') : '{{ current_year }}';
+            
+            // Navigate to detail page with year parameter
+            window.location.href = `/info_graph/${resourceType}/?year=${currentYear}`;
+        }
+    </script>
+{% endblock %}

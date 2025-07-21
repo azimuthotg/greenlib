@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Website</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Prompt', sans-serif;
+    background-image: url('/static/npulib.jpg'); /* เปลี่ยน 'background-image.jpg' เป็น URL ของรูปภาพที่คุณต้องการเป็นพื้นหลัง */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content {
+    background-color: rgba(255, 255, 255, 0.7); /* สีพื้นหลังของเนื้อหาโดยใช้ RGBA (แบบทศนิยม) เพื่อทำให้เนื้อหาโปร่งแสงบ้างเล็กน้อย */
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  h1 {
+    color: #333;
+  }
+
+  p {
+    color: #333;
+  }
+</style>
+</head>
+<body>
+
+<div class="content">
+  <h1>ยินดีต้อนรับเข้าสู่เว็บไซต์</h1>
+  <p>ขอบคุณที่เข้ามาเยี่ยมชมเว็บไซต์ของเรา</p>
+  <p>หากคุณต้องการเข้าชม ห้องสมุดสีเขียวสำนักวิทยบริการ มหาวิทยาลัยนครพนม <a href="web/">คลิกที่นี่</a></p>
+</div>
+
+</body>
+</html>

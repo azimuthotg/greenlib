@@ -1,0 +1,802 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+  NPU Green Library - Index
+{% endblock %}
+
+{% block style %}
+<style>
+  .chart-container {
+      width: 100%;
+      height: 300px;
+      margin: 10px 0;
+  }
+  canvas {
+      display: block;
+  }
+  
+  /* Year Tabs Styling */
+  #yearTabs .nav-link {
+      color: #2e7d32;
+      border: 2px solid #2e7d32;
+      background-color: white;
+      font-weight: 600;
+      padding: 10px 20px;
+      margin: 0 5px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+  }
+  
+  #yearTabs .nav-link:hover {
+      background-color: #2e7d32;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+  }
+  
+  #yearTabs .nav-link.active {
+      background-color: #2e7d32;
+      color: white;
+      border-color: #2e7d32;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+  }
+  
+  #yearTabs {
+      border-bottom: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- ======= Hero Section ======= -->
+<section id="hero">
+  <div id="heroCarousel" data-bs-interval="5000" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+    <ol class="carousel-indicators" id="hero-carousel-indicators"></ol>
+
+    <div class="carousel-inner" role="listbox">
+      <!--
+      <div class="container">
+        <img src="{% static 'frontend/assets/img/slide/2.png' %}" alt="" width="100%" height="100%">
+      </div>
+      -->
+      <div class="carousel-item active" style="background-image: url(/static/frontend/assets/img/slide/cover_carbon2.png)">
+        <div class="carousel-container">
+          <div class="container">
+            <h2 class="animate__animated animate__fadeInDown"><br></h2>
+            <p class="animate__animated animate__fadeInUp"><br><br></p>
+          </div>
+        </div>
+      </div>  
+      <div class="carousel-item active" style="background-image: url(/static/frontend/assets/img/slide/cover_carbon.png)">
+        <div class="carousel-container">
+          <div class="container">
+            <h2 class="animate__animated animate__fadeInDown"><br></h2>
+            <p class="animate__animated animate__fadeInUp"><br><br></p>
+            <!-- <a href="{% url 'blog_detail' '210567' %}" class="btn-get-started animate__animated animate__fadeInUp scrollto">อ่านต่อ</a> -->
+          </div>
+        </div>
+      </div>  
+      <!--
+      <div class="carousel-item active" style="background-image: url(/static/frontend/assets/img/slide/cover_diy.jpg)">
+        <div class="carousel-container">
+          <div class="container">
+            <h2 class="animate__animated animate__fadeInDown">กิจกรรม DIY ไอเดีย REUSE</h2>
+            <p class="animate__animated animate__fadeInUp">เมื่อวันอังคารที่ 21 พฤษภาคม 2567 เวลา 13.00 น. ณ บริเวณห้องวารสาร ชั้น 1 สำนักวิทยบริการ บุคลากรและนักศึกษาเข้าร่วมกิจกรรม DIY ไอเดีย Reuse จากขวดน้ำพลาสติก ที่เหลือใช้สามารถนำกลับมาใ้ช้ประโยชน์ได้โดยทำเป็นกระถางต้นไม้และนำดอกไม้ที่ชอบมาประดับ ทำให้เกิดความสวยงาม ประหยัดพื้นที่ คุ้มค่า และช่วยลดปริมาณขยะได้อีกด้วย</p>
+            <a href="{% url 'blog_detail' '210567' %}" class="btn-get-started animate__animated animate__fadeInUp scrollto">อ่านต่อ</a>
+          </div>
+        </div>
+      </div>
+
+       Slide 2 
+      <div class="carousel-item" style="background-image: url(/static/frontend/assets/img/slide/slide-5.jpg)">
+        <div class="carousel-container">
+          <div class="container">
+            <h2 class="animate__animated animate__fadeInDown">จัดกิจกรรม 5ส.</h2>
+            <p class="animate__animated animate__fadeInUp">วันพฤหัสบดีที่ 9 พฤษภาคม 2567 เวลา 13:30น. ผู้บริหารและบุคลากร สำนักวิทยบริการ ร่วมแรงร่วมใจกันจัดกิจกรรม 5ส. สะสาง สะดวก สะอาด สุขลักษณะ และสร้างนิสัย ที่บริเวณชั้น 5 สำนักวิทยบริการ โดยทำความสะอาดพื้นและกระจกหน้าต่าง เก็บสิ่งของให้เป็นระเบียบเรียบร้อย</p>
+            <a href="{% url 'blog_detail' '090567' %}" class="btn-get-started animate__animated animate__fadeInUp scrollto">อ่านต่อ</a>
+          </div>
+        </div>
+      </div>
+    -->
+      <!-- Slide 3 
+      <div class="carousel-item" style="background-image: url(/static/frontend/assets/img/slide/slide-4.jpg)">
+        <div class="carousel-container">
+          <div class="container">
+            <h2 class="animate__animated animate__fadeInDown">ศึกษาดูงานและแลกเปลี่ยนเรียนรู้ <br>การบริการดิจิทัลและการบริหารงานห้องสมุดสีเขียวและสำนักงานสีเขียว</h2>
+            <p class="animate__animated animate__fadeInUp">วันศุกร์ที่ 15 มีนาคม 2567 เวลา 8:30 - 16:30 น. สำนักวิทยบริการ เข้าศึกษาดูงานและแลกเปลี่ยนเรียนรู้ เรื่องการบริการดิจิทัล (Digital Service) และการบริหารงานห้องสมุดสีเขียว (Green Library) และสำนักงานสีเขียว (Green Office) กับ สำนักวิทยบริการและเทคโนโลยีสารสนเทศ มหาวิทยาลัยราชภัฏเพชรบุรี</p>
+            <a href="{% url 'blog_detail' '150367' %}" class="btn-get-started animate__animated animate__fadeInUp scrollto">อ่านต่อ</a>
+          </div>
+        </div>
+      </div>
+      -->
+    </div>
+
+    <a class="carousel-control-prev" href="#heroCarousel" role="button" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+    </a>
+
+    <a class="carousel-control-next" href="#heroCarousel" role="button" data-bs-slide="next">
+      <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+    </a>
+
+  </div>
+</section><!-- End Hero -->
+
+<main id="main">
+
+  <!-- ======= About Us Section ======= -->
+  <section id="about" class="about">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>เราชาวสำนักวิทยบริการ</h2>
+        <p>สำนักวิทยบริการ มหาวิทยาลัยนครพนม บริการด้วยไมตรีจิตรและเป็นมิตรกับสิ่งแวดล้อม</p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="{% static 'frontend/assets/img/IMG_5019.jpg' %}" class="img-fluid" alt="">
+        </div>
+        <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
+          <h3>วิสัยทัศน์ พันธกิจ และวัตถุประสงค์</h3>
+          <!-- ตัวหนังสือเอียง
+            <p class="fst-italic">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua. 
+          -->
+          </p>
+          <p style="text-indent: 50px;">
+            สำนักวิทยบริการ มหาวิทยาลัยนครพนม  การกำหนดนโยบายการพัฒนา Green Library และ Green Office ที่ได้มาตรฐาน
+            เพื่อสร้างบรรยากาศที่เอื้อต่อการเรียนรู้และเป็นมิตรกับสิ่งแวดล้อม  สอดคล้องกับแผนยุทธศาสตร์ มหาวิทยาลัยนครพนมด้านการพัฒนา
+            โครงสร้างพื้นฐาน(Green and Sustainable Campus) มีบรรยากาศที่ร่มรื่น เป็นธรรมชาติและมีสิ่งแวดล้อมที่ดี  โดยสำนักวิทยบริการ
+            ได้ส่งเสริมและสนับสนุนให้ดำเนินงานต่าง ๆ ที่มุ่งมั่นประหยัดพลังงานและรักษ์สิ่งแวดล้อมอย่างเป็นรูปธรรม  ให้บุคลากรและผู้ใช้บริการ
+            เกิดความตระหนักรู้ เข้าใจและร่วมมือดำเนินกิจกรรมด้านการพัฒนาห้องสมุดสีเขียว  ตามประกาศสมาคมห้องสมุดแห่งประเทศไทย เรื่อง มาตรฐาน
+            ห้องสมุดสีเขียว พ.ศ.2566 จึงกำหนดวิสัยทัศน์ พันธกิจและวัตถุประสงค์ของการพัฒนาสำนักวิทยบริการ  มหาวิทยาลัยนครพนม สู่มาตรฐาน
+            ห้องสมุดสีเขียว
+          </p>
+          <P>วิสัยทัศน์ : "มุ่งมั่นพัฒนาห้องสมุดสีเขียวและเป็นมิตรกับสิ่งแวดล้อมที่ได้มาตรฐานอย่างยั่งยืน" </P>
+          <P>พันธกิจ : 1.จัดหา จัดเก็บ บริการและส่งเสริมการเรียนรู้ด้านการอนุรักษ์พลังงาน ทรัพยากรและสิ่งแวดล้อมแก่ประชาคมมหาวิทยาลัยนครพนมและสังคม<br>
+          2. บริหารจัดการแหล่งเรียนรู้ เพื่อการประหยัดพลังงาน ทรัพยากรและรักษาสิ่งแวดล้อม สนับสนุนการมุ่งสู่ความเป็นกลางทางคาร์บอน(Carbon Neutrality)และสนับสนุนการลดการปล่อยก๊าซเรือนกระจกสุทธิเป็นศูนย์(Net Zero)</P>
+          <P><a href="{% url 'view_pdf' '001' %}">อ่านต่อ</a></P>
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End About Us Section -->
+
+  <!-- ======= Why Us Section ======= -->
+  <section id="why-us" class="why-us">
+    <div class="container">
+      <div class="section-title">
+        <h2>ตัวชี้วัดความสำเร็จ</h2>
+        <p>การประเมินห้องสมุดสีเขียว ประกอบด้วยการประเมิน 2 ด้าน ได้แก่ <br>
+          1. (GL) การประเมินด้านห้องสมุด ใช้เกณฑ์การประเมินตามที่ชมรมห้องสมุดสีเขียวกำหนด ซึ่งมี
+          <strong>5 หมวด 12 ประเด็น 35 ตัวชี้วัด</strong> <br>
+          2. (GO) การประเมินด้านทรัพยากรและสิ่งแวดล้อม ใช้เกณฑ์การประเมินสำนักงานสีเขียว ของ
+          กรมส่งเสริมคุณภาพสิ่งแวดล้อม ซึ่งมี<strong> 6 หมวด 23 ประเด็น 63 ตัวชี้วัด</strong></p>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 1</span>
+          <h5>การกำหนดนโยบาย การวางแผนการดำเนินและการปรับปรุงอย่างต่อเนื่อง</h5>
+          <p> <a href="{% url 'view_group' 'GL'%}#category-7">Green Library</a> | <a href="{% url 'view_group' 'GO'%}#category-1">Green Office</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 2</span>
+          <h5>การสื่อสารและสร้างจิตสำนึก</h5>
+          <p><a href="{% url 'view_group' 'GL'%}#category-8">Green Library</a> | <a href="{% url 'view_group' 'GO'%}#category-2">Green Office</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 3</span>
+          <h5>การจัดการทรัพยากรสารสนเทศและการให้บริการห้องสมุดสีเขียว</h5>
+          <p><a href="{% url 'view_group' 'GL'%}#category-9">Green Library</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 4</span>
+          <h5>การส่งเสริมการเรียนรู้</h5>
+          <p><a href="{% url 'view_group' 'GL'%}#category-10">Green Library</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 5</span>
+          <h5>เครือข่ายความร่วมมือ</h5>
+          <p><a href="{% url 'view_group' 'GL'%}#category-11">Green Library</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 6</span>
+          <h5>การใช้ทรัพยากรและพลังงาน</h5>
+          <p><a href="{% url 'view_group' 'GO'%}#category-3">Green Office</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 7</span>
+          <h5>การจัดการของเสีย</h5>
+          <p><a href="{% url 'view_group' 'GO'%}#category-4">Green Office</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 8</span>
+          <h5>สภาพแวดล้อมและความปลอดภัย</h5>
+          <p><a href="{% url 'view_group' 'GO'%}#category-5">Green Office</a></p>
+        </div>
+
+        <div class="col-lg-4 col-md-6 content-item">
+          <span>หมวดที่ 9</span>
+          <h5>การจัดซื้อและจัดจ้าง</h5>
+          <p><a href="{% url 'view_group' 'GO'%}#category-6">Green Office</a></p>
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Why Us Section -->
+
+<!-- ======= start Display info_graph ======= -->
+<section id="featured-services" class="featured-services section-bg">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="w-100 text-center position-relative">
+        <h2>ข้อมูลการใช้พลังงานและทรัพยากร ปี {{ current_year }}</h2>
+        <a href="#" onclick="goToInfoGraph()" class="btn btn-success position-absolute" style="right: 0; top: 50%; transform: translateY(-50%);">ดูข้อมูลเพิ่มเติม</a>
+      </div>
+    </div>
+
+    <!-- แท็บเลือกปี -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-center">
+          <ul class="nav nav-tabs" id="yearTabs" role="tablist">
+            {% for year in available_years %}
+            <li class="nav-item" role="presentation">
+              <a class="nav-link {% if year.year == current_year %}active{% endif %}" 
+                 href="#" 
+                 onclick="loadChartData({{ year.year }}); return false;"
+                 data-year="{{ year.year }}">
+                ปี {{ year.year }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="greenhouseGasChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="electricityChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="dieselChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="waterChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="landfillWasteChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-container">
+                <canvas id="paperA4A3Chart"></canvas>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+<!-- ======= end Display info_graph ======= -->
+
+  <!-- ======= Services Section ======= -->
+  <section id="services" class="services">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>โครงการ/กิจกรรม</h2>
+        <p>สำนักวิทยบริการได้นำเสนอโครงการและกิจกรรมที่เน้นการอนุรักษ์และการใช้ประโยชน์จากทรัพยากรธรรมชาติอย่างยั่งยืน ผ่านการสร้างความเข้มแข็งและยั่งยืนในชุมชน โดยการส่งเสริมการแบ่งปันความรู้และการเรียนรู้ เพื่อสร้างความเข้าใจและการรับรู้เกี่ยวกับการอนุรักษ์และการใช้ประโยชน์จากทรัพยากรธรรมชาติอย่างยั่งยืนในสังคมและส่งเสริมการพัฒนาที่ยั่งยืนของทรัพยากรธรรมชาติสำหรับรุ่นต่อไป ด้วยการร่วมมือกับองค์กรและชุมชนท้องถิ่น ได้ผลที่น่าพอใจและยั่งยืนในการสร้างสังคมและเศรษฐกิจที่ยั่งยืนทางสิ่งแวดล้อมในระยะยาว</p>
+      </div>
+
+      <div class="row">
+        {% for i in informations %}
+
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
+            <div class="icon-box iconbox-blue">
+
+                <img src="{{i.image1.url}}" class="img-fluid" alt="" >
+
+              <h4><a href="">{{i.title}}</a></h4>
+              <p>{{i.date}} {{i.time}}</p>
+              <p style="text-align: left;">{{i.description1|slice:":200"}}</p>
+              <p style="text-align: right;"><a href="{% url 'blog_detail' i.pk %}">อ่านต่อ</a></p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section><!-- End Services Section -->
+
+  <!-- ======= Cta Section ======= 
+  <section id="cta" class="cta">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-lg-9 text-center text-lg-start">
+          <h3>Call To Action</h3>
+          <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div class="col-lg-3 cta-btn-container text-center">
+          <a class="cta-btn align-middle" href="#">Call To Action</a>
+        </div>
+      </div>
+
+    </div>
+  </section> End Cta Section -->
+
+  <!-- ======= Portfolio Section ======= -->
+  <!--
+  <section id="portfolio" class="portfolio">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>Portfolio</h2>
+        <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 d-flex justify-content-center">
+          <ul id="portfolio-flters">
+            <li data-filter="*" class="filter-active">All</li>
+            <li data-filter=".filter-app">App</li>
+            <li data-filter=".filter-card">Card</li>
+            <li data-filter=".filter-web">Web</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row portfolio-container">
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-1.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>App 1</h4>
+              <p>App</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-1.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="App 1"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-2.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Web 3</h4>
+              <p>Web</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-2.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Web 3"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-3.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>App 2</h4>
+              <p>App</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-3.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="App 2"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-card">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-4.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Card 2</h4>
+              <p>Card</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-4.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Card 2"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-5.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Web 2</h4>
+              <p>Web</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-5.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Web 2"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-6.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>App 3</h4>
+              <p>App</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-6.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="App 3"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-card">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-7.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Card 1</h4>
+              <p>Card</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-7.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Card 1"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-card">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-8.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Card 3</h4>
+              <p>Card</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-8.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Card 3"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 portfolio-item filter-web">
+          <div class="portfolio-wrap">
+            <img src="{% static 'frontend/assets/img/portfolio/portfolio-9.jpg' %}" class="img-fluid" alt="">
+            <div class="portfolio-info">
+              <h4>Web 3</h4>
+              <p>Web</p>
+              <div class="portfolio-links">
+                <a href="{% static 'frontend/assets/img/portfolio/portfolio-9.jpg' %}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Web 3"><i class="bx bx-plus"></i></a>
+                <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+  -->
+  <!-- End Portfolio Section -->
+
+    </div>
+
+    <!-- ======= Our Clients Section ======= -->
+    <section id="clients" class="clients">
+      <div class="container">
+  
+        <div class="section-title">
+          <h2>เครือข่ายความร่วมมือ</h2>
+          <p>เครือข่ายห้องสมุดสีเขียวเป็นพื้นที่ที่สมาชิกมาเชื่อมโยงกันเพื่อแบ่งปันความรู้และทรัพยากรที่เกี่ยวข้องกับการอนุรักษ์และการใช้ประโยชน์จากทรัพยากรธรรมชาติอย่างยั่งยืน โดยเน้นการสร้างชุมชนที่ยั่งยืนและมีสุขภาพดีทางสิ่งแวดล้อม ผ่านการแลกเปลี่ยนความรู้และเทคโนโลยี เสริมสร้างโครงสร้างพื้นฐานที่ยั่งยืนในการปรับตัวต่อการเปลี่ยนแปลงสภาพอากาศและลดปริมาณขยะ โดยการสร้างพันธมิตรที่มีประสิทธิภาพระหว่างภาครัฐและเอกชนที่สนับสนุนการดำเนินการที่ยั่งยืนและเชิงนวัตกรรมทางสิ่งแวดล้อม ที่ส่งเสริมสุขภาพและความเป็นอยู่ที่ดีของทุกคนในสังคมในระยะยาว</p>
+        </div>
+  
+        <div class="clients-slider swiper">
+          <div class="swiper-wrapper align-items-center">
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/NPUGreenLib.png' %}"class="img-fluid"></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/2.png' %}" class="img-fluid"></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/3.png' %}" class="img-fluid" ></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/4.png' %}" class="img-fluid" ></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/5.png' %}" class="img-fluid" ></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/6.png' %}" class="img-fluid" ></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/7.png' %}" class="img-fluid" ></div>
+            <div class="swiper-slide"><img src="{% static 'frontend/assets/img/clients/8.png' %}" class="img-fluid" ></div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+  
+      </div>
+    </section><!-- End Our Clients Section -->
+  <!-- ======= Team Section ======= -->
+  <section id="team" class="team section-bg">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>ผู้ประสานงาน</h2>
+        <p>สำหรับผู้ที่ประสงค์จะสอบถามข้อมูลเพิ่มเติมหรือติดต่อประสานงานเกี่ยวกับโครงการ/กิจกรรมของห้องสมุดสีเขียว สามารถติดต่อผู้ประสานงานได้ตามรายละเอียดดังข้อมูลข้างล่าง
+          ทางสำนักวิทยบริการยินดีรับข้อเสนอแนะและความคิดเห็นเพื่อการพัฒนาและปรับปรุงกิจกรรมของห้องสมุดสีเขียวต่อไป</p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="member">
+            <img src="{% static 'frontend/assets/img/team/team-1.jpg' %}" alt="">
+            <h4>นางรุ่งเรือง สงเคราะห์</h4>
+            <span>ผู้อำนวยการสำนักวิทยบริการ</span>
+            <p>
+              กำกับ ติดตาม ดูแลการดำเนินงาน และพัฒนาห้องสมุดสีเขียว ตามเกณฑ์การประเมินห้องสมุดสีเขียว
+            </p>
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="member">
+            <img src="{% static 'frontend/assets/img/team/team-2.jpg' %}" alt="">
+            <h4>นางสาวนพคุณ ขันบันจง</h4>
+            <span>นักวิชาการการเงินและบัญชี</span>
+            <p>
+              ติดตามการดำเนินกิจกรรม จัดเก็บ รวบรวม เอกสาร หลักฐาน และข้อมูลที่เกี่ยวข้องกับการประเมินห้องสมุดสีเขียว
+            </p>
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
+          <div class="member">
+            <img src="{% static 'frontend/assets/img/team/team-3.jpg' %}" alt="">
+            <h4>นายสุรนารถ สุพรรณ</h4>
+            <span>นักวิชาการคอมพิวเตอร์</span>
+            <p>
+              พัฒนาระบบจัดเก็บเอกสาร/หลักฐาน ตามตัวชี้วัดห้องสมุดสีเขียว
+            </p>
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+  </section> 
+  <!-- End Team Section -->
+  <!-- ======= Contact Section ======= -->
+  <section id="contact" class="contact">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>ติดต่อเรา</h2>
+        <!-- <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>-->
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-5 d-flex align-items-stretch">
+          <div class="info">
+            <div class="address">
+              <i class="bi bi-geo-alt"></i>
+              <h4>Location:</h4>
+              <p>167 หมู่ที่ 8 บ้านเนินสะอาด ตำบลนาราชควาย อำเภอเมือง
+                จังหวัดนครพนม 48000</p>
+            </div>
+
+            <div class="email">
+              <i class="bi bi-envelope"></i>
+              <h4>Email:</h4>
+              <p>arcnpu@npu.ac.th</p>
+            </div>
+
+            <div class="phone">
+              <i class="bi bi-phone"></i>
+              <h4>Call:</h4>
+              <p>+66 0 4258 7285</p>
+            </div>
+            <!-- แผนที่ สำนักวิทยบริการ มหาวิทยาลัยนครพนม-->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.2604958949596!2d104.71822397420976!3d17.39928200246424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313c0c76254cd749%3A0xf5e5e5dcec802a7f!2z4Liq4Liz4LiZ4Lix4LiB4Lin4Li04LiX4Lii4Lia4Lij4Li04LiB4Liy4LijIOC4oeC4q-C4suC4p-C4tOC4l-C4ouC4suC4peC4seC4ouC4meC4hOC4o-C4nuC4meC4oQ!5e0!3m2!1sth!2sth!4v1716191135052!5m2!1sth!2sth" width="100%" height="50%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+
+        </div>
+
+        <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
+          <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="name">ชื่อ - นามสกุล</label>
+                <input type="text" name="name" class="form-control" id="name" required>
+              </div>
+              <div class="form-group col-md-6 mt-3 mt-md-0">
+                <label for="name">Email (ใช้แจ้งตอบกลับ)</label>
+                <input type="email" class="form-control" name="email" id="email" required>
+              </div>
+            </div>
+            <div class="form-group mt-3">
+              <label for="name">หัวเรื่อง</label>
+              <input type="text" class="form-control" name="subject" id="subject" required>
+            </div>
+            <div class="form-group mt-3">
+              <label for="name">ข้อความ</label>
+              <textarea class="form-control" name="message" rows="10" required></textarea>
+            </div>
+            <div class="my-3">
+              <div class="loading">Loading</div>
+              <div class="error-message"></div>
+              <div class="sent-message">Your message has been sent. Thank you!</div>
+            </div>
+            <div class="text-center"><button type="submit">Send Message</button></div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section><!-- End Contact Section -->
+
+</main><!-- End #main -->
+{% endblock %} <!-- End block content -->
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Embedding the data using json_script -->
+    <script id="labels-data" type="application/json">{{ labels|safe }}</script>
+    <script id="greenhouse-gas-data" type="application/json">{{ greenhouse_gas_data|safe }}</script>
+    <script id="electricity-data" type="application/json">{{ electricity_data|safe }}</script>
+    <script id="diesel-data" type="application/json">{{ diesel_data|safe }}</script>
+    <script id="water-data" type="application/json">{{ water_data|safe }}</script>
+    <script id="landfill-waste-data" type="application/json">{{ landfill_waste_data|safe }}</script>
+    <script id="paper-a4-a3-data" type="application/json">{{ paper_a4_a3_data|safe }}</script>
+
+    <script>
+        // Retrieve the embedded JSON data (use let for mutable variables)
+        let labels = JSON.parse(document.getElementById('labels-data').textContent);
+        let greenhouseGasData = JSON.parse(document.getElementById('greenhouse-gas-data').textContent);
+        let electricityData = JSON.parse(document.getElementById('electricity-data').textContent);
+        let dieselData = JSON.parse(document.getElementById('diesel-data').textContent);
+        let waterData = JSON.parse(document.getElementById('water-data').textContent);
+        let landfillWasteData = JSON.parse(document.getElementById('landfill-waste-data').textContent);
+        let paperA4A3Data = JSON.parse(document.getElementById('paper-a4-a3-data').textContent);
+
+        // Store chart instances globally
+        let chartInstances = {};
+
+        // Function to create a chart
+        function createChart(ctx, chartId, label, data, backgroundColor, borderColor) {
+            // Destroy existing chart if it exists
+            if (chartInstances[chartId]) {
+                chartInstances[chartId].destroy();
+            }
+
+            chartInstances[chartId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Function to initialize all charts
+        function initializeCharts() {
+            createChart(document.getElementById('greenhouseGasChart'), 'greenhouse', 'ก๊าซเรือนกระจก (kgCO2e)', greenhouseGasData, 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)');
+            createChart(document.getElementById('electricityChart'), 'electricity', 'ไฟฟ้า (kWh)', electricityData, 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)');
+            createChart(document.getElementById('dieselChart'), 'diesel', 'ดีเซล (L)', dieselData, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+            createChart(document.getElementById('waterChart'), 'water', 'น้ำ (m3)', waterData, 'rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)');
+            createChart(document.getElementById('landfillWasteChart'), 'landfill', 'ของเสียฝังกลบ (kg)', landfillWasteData, 'rgba(255, 159, 64, 0.2)', 'rgba(255, 159, 64, 1)');
+            createChart(document.getElementById('paperA4A3Chart'), 'paper', 'กระดาษ A4/A3 (Kg,1รีม=2.5Kg)', paperA4A3Data, 'rgba(255, 206, 86, 0.2)', 'rgba(255, 206, 86, 1)');
+        }
+
+        // Function to load chart data via AJAX
+        function loadChartData(year) {
+            // Show loading indicator
+            const yearTitle = document.querySelector('h2');
+            const originalTitle = yearTitle.textContent;
+            yearTitle.textContent = 'กำลังโหลดข้อมูล...';
+
+            // Update active tab
+            document.querySelectorAll('#yearTabs .nav-link').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`#yearTabs .nav-link[data-year="${year}"]`).classList.add('active');
+
+            // AJAX request
+            fetch(`/web/ajax/chart-data/${year}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update global variables
+                        labels = data.labels;
+                        greenhouseGasData = data.greenhouse_gas_data;
+                        electricityData = data.electricity_data;
+                        dieselData = data.diesel_data;
+                        waterData = data.water_data;
+                        landfillWasteData = data.landfill_waste_data;
+                        paperA4A3Data = data.paper_a4_a3_data;
+
+                        // Update title
+                        yearTitle.textContent = `ข้อมูลการใช้พลังงานและทรัพยากร ปี ${data.current_year}`;
+
+                        // Recreate charts with new data
+                        initializeCharts();
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + data.error);
+                        yearTitle.textContent = originalTitle;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดข้อมูล');
+                    yearTitle.textContent = originalTitle;
+                });
+        }
+
+        // Initialize charts on page load
+        initializeCharts();
+
+        // Function to navigate to info_graph with current year
+        function goToInfoGraph() {
+            // Get current active year from the tab
+            const activeTab = document.querySelector('#yearTabs .nav-link.active');
+            const currentYear = activeTab ? activeTab.getAttribute('data-year') : '{{ current_year }}';
+            
+            // Navigate to info_graph with year parameter
+            window.location.href = `/info_graph/?year=${currentYear}`;
+        }
+    </script>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock%}
+
+{% block breadcrumbs%}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>รายละเอียดกิจกรรม</h2>
+        </div>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+
+{% endblock%}
+
+{% block content %}
+<main id="main">
+    <!-- ======= Portfolio Details Section ======= -->
+    <section id="portfolio-details" class="portfolio-details">
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-8">
+            <div class="portfolio-details-slider swiper">
+              <div class="swiper-wrapper align-items-center">
+
+                  {% if information.image1 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image1.url}}" alt="">
+                    </div>
+                  {% endif %}
+                  {% if information.image2 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image2.url}}" alt="">
+                    </div>
+                  {% endif %}
+                  {% if information.image3 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image3.url}}" alt="">
+                    </div>
+                  {% endif %}             
+                  {% if information.image4 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image4.url}}" alt="">
+                    </div>
+                  {% endif %}
+                  {% if information.image5 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image5.url}}" alt="">
+                    </div>
+                  {% endif %}
+                  {% if information.image6 %}
+                    <div class="swiper-slide">
+                      <img src="{{information.image6.url}}" alt="">
+                    </div>
+                  {% endif %}
+                <!--
+                <div class="swiper-slide">
+                    <img src="{% static 'frontend/assets/img/blogs/210567-1.jpg' %}" alt="">
+                </div>
+                -->
+
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="portfolio-info">
+              <h3>{{information.title}}</h3>
+              <ul>
+                <li><strong>หมวด</strong>: {{information.category}} </li>
+                <li><strong>กลุ่มเป้าหมาย</strong>: {{information.target_group}}</li>
+                <li><strong>วันที่ </strong>: {{information.date}}</li>
+                <li><strong>เวลา </strong>: {{information.time}}</li>
+                <li><strong>สถานที่</strong>: {{information.location}}</li>
+              </ul>
+            </div>
+            <div class="portfolio-description">
+              
+              <p>
+                {{information.description1|linebreaksbr}}
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Portfolio Details Section -->
+
+  </main><!-- End #main -->
+{% endblock %}

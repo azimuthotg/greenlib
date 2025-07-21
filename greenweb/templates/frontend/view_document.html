@@ -1,0 +1,59 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock%}
+
+{% block style %}
+<style>
+    /* เพิ่มสไตล์สำหรับย่อหน้าที่เป็นหัวข้อ */
+    .heading-paragraph {
+        text-indent: 50px;
+        font-weight: bold; /* เพิ่มความหนาของตัวอักษร (อาจจะใช้สำหรับหัวข้อ) */
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs%}
+    <!-- ======= Breadcrumbs ======= -->
+    <!--<section class="breadcrumbs">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>เอกสาร / ฐานข้อมูล</h2>
+            </div>
+        </div>
+    </section> End Breadcrumbs -->
+
+{% endblock%}
+
+{% block content %}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>เอกสารที่เกี่ยวข้อง</h2>
+            </div>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '098' %}">เกณฑ์การประเมินห้องสมุดสีเขียว 98 ตัวชี้วัด</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '1.1.4' %}">แผนการดำเนินงานพัฒนาห้องสมุดสีเขียว</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '1.6.1' %}">กฎหมายที่ครอบคลุมปัญหาสิ่งแวดล้อมและบริบทของสำนักวิทยบริการ</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '2.1.1' %}">หลักสูตรและแผนการฝึกอบรมประจำปี พ.ศ.2567</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '2.2.1' %}">แผนการสื่อสารและประชาสัมพันธ์ประจำปี พ.ศ.2567</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '4.1.1' %}">แผนงานจัดกิจกรรมส่งเสริมการอ่านและการเรียนรู้ด้านการอนุรักษ์พลังงานและสิ่งแวดล้อม ประจำปี พ.ศ.2567</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '8.1.1' %}">แผนการบำรุงรักษา ประจำปี พ.ศ.2567</a></p>
+    <p class="heading-paragraph"><i class="bi bi-filetype-pdf "></i> <a href="{% url 'view_pdf_doc' '8.4.4' %}">แผนการควบคุมสัตว์พาหะนำโรค</a></p>
+
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>แหล่งความรู้ / ฐานข้อมูล</h2>
+            </div>
+        </div>
+    </section><!-- End Breadcrumbs -->
+    <p class="heading-paragraph"><i class="bi bi-globe "></i> <a href="https://www.dcce.go.th/" target="_blank"> กรมการเปลี่ยนแปลงสภาพภูมิอากาศและสิ่งแวดล้อม กระทรวงทรัพยากรธรรมชาติและสิ่งแวดล้อม</a></p>
+    <p class="heading-paragraph"><i class="bi bi-globe "></i> <a href="http://gp.pcd.go.th/all" target="_blank"> ศูนย์ปฏิบัติการวิเคราะห์มลพิษและสิ่งแวดล้อม กรมควบคุมมลพิษ กระทรวงทรัพยากรธรรมชาติและสิ่งแวดล้อม</a></p>
+    <p class="heading-paragraph"><i class="bi bi-globe "></i> <a href="https://thaigreendirectory.com/" target="_blank">Thai GREEN Directory</a> เว็บไซต์ที่การรวบรวมข้อมูลสินค้าและบริการที่เป็นมิตรกับสิ่งแวดล้อม จากหน่วยงานที่ให้การรับรองฉลาก</p>
+    {% endblock %}

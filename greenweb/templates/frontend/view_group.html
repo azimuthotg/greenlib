@@ -1,0 +1,155 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+   NPU Green Library 
+{% endblock%}
+
+{% block style %}
+<style>
+   .content-card {
+       border: 1px solid #e0e0e0;
+       border-radius: 8px;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+       padding: 20px;
+       margin: 20px 0;
+       background-color: #fff;
+   }
+   .group-title {
+       margin-bottom: 20px;
+       padding: 15px;
+       background-color: #2e7d32 !important;
+       color: white !important;
+       border-radius: 5px;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+   }
+   
+   /* หมวด */
+   .table > tbody > tr.category-row > td {
+       background-color: #43a047 !important;
+       color: white !important;
+       font-weight: bold;
+       padding: 15px;
+   }
+
+   /* ประเด็น */
+   .table > tbody > tr.issue-row > td {
+       background-color: #66bb6a !important;
+       color: #1a1a1a !important;
+       font-weight: 500;
+       padding: 12px;
+   }
+
+   /* หัวข้อตัวชี้วัด */
+   .table > tbody > tr.header-row > td {
+    background-color: #c8e6c9 !important;
+    color: #1a1a1a !important;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center !important;  /* จัดกลาง */
+    font-size: 1rem;  /* ขนาดหัวตาราง */
+    }
+
+   /* เนื้อหา */
+   .table > tbody > tr.content-row > td {
+       background-color: #ffffff !important;
+       padding: 15px;
+   }
+
+   .evidence-list {
+       list-style: none;
+       padding-left: 0;
+   }
+   .evidence-list li {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-left: 3px solid #43a047;
+    background-color: #f1f8e9;
+    font-size: 0.9rem;  /* ลดขนาดตัวอักษรในรายการ */
+    }
+   .evidence-link {
+    display: inline-block;
+    margin-left: 10px;
+    color: #2e7d32;
+    font-weight: normal;  /* ลดความหนาตัวอักษร */
+    font-size: 0.9rem;   /* ลดขนาดตัวอักษร */
+    }
+   .evidence-link:hover {
+       color: #1b5e20;
+       text-decoration: none;
+   }
+   h3, h4, h5 {
+       margin: 0;
+   }
+   .header-row h5 {
+    text-align: center;
+    margin: 0;
+    font-size: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+   <section class="breadcrumbs">
+       <div class="container">
+           <div class="d-flex justify-content-between align-items-center">
+               <h2>ผลการดำเนินงาน {{ current_year.year_description }}</h2>
+           </div>
+       </div>
+   </section>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+   <div class="content-card">
+       <div class="group-title">
+           <h2>({{ category_group.group_name }}) {{ category_group.group_description }} - {{ current_year.year_description }}</h2>
+       </div>
+
+       <div class="table-responsive">
+           <table class="table table-bordered">
+               {% for category in categories %}
+                   <tr class="category-row">
+                       <td colspan="2" id="category-{{ category.category_id }}">
+                           <h3>หมวดที่ {{ category.category_name }}: {{ category.category_description }}</h3>
+                       </td>
+                   </tr>
+                   {% for issue in category.issues.all %}
+                       <tr class="issue-row">
+                           <td colspan="2" id="issue-{{ issue.issue_id }}">
+                               <h4>ประเด็น {{ issue.issue_name }}: {{ issue.issue_description }}</h4>
+                           </td>
+                       </tr>
+                       <tr class="header-row">
+                           <td><h5>ตัวชี้วัด</h5></td>
+                           <td><h5>ผลการดำเนินงาน/เอกสารหลักฐาน</h5></td>
+                       </tr>
+                       {% for indicator in issue.indicators.all %}
+                           <tr class="content-row">
+                               <td style="width: 50%;" id="indicator-{{ indicator.indicator_id }}">
+                                   <strong>{{ indicator.indicator_name }}</strong>:
+                                   {{ indicator.indicator_description|linebreaksbr }}
+                               </td>
+                               <td style="width: 50%;">
+                                   <ul class="evidence-list">
+                                       {% for evidence in indicator.evidences.all %}
+                                           <li id="evidence-{{ evidence.evidence_id }}">
+                                               {{ evidence.evidence_description }}
+                                               <a href="{{ evidence.evidence_file.url }}" 
+                                                  class="evidence-link" 
+                                                  target="_blank">
+                                                   เอกสารแนบ{{ evidence.evidence_name }}
+                                               </a>
+                                           </li>
+                                       {% endfor %}
+                                   </ul>
+                               </td>
+                           </tr>
+                       {% endfor %}
+                   {% endfor %}
+               {% endfor %}
+           </table>
+       </div>
+   </div>
+</div>
+{% endblock %}

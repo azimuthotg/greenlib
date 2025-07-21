@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>
+    {% block title %}
+      
+    {% endblock %}
+  </title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'frontend/assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'frontend/assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Prompt:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'frontend/assets/vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'frontend/assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'frontend/assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'frontend/assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'frontend/assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'frontend/assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'frontend/assets/css/style.css' %}" rel="stylesheet">
+  {% block style %}
+  
+  {% endblock %}
+</head>
+
+<body>
+  <!-- ======= Top Bar ======= -->
+  <section id="topbar" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope-fill"></i><a href="mailto:arcnpu@npu.ac.th">arcnpu@npu.ac.th</a>
+        <i class="bi bi-phone-fill phone-icon"></i> +66 0 4258 7285
+      </div>
+      <div class="social-links d-none d-md-block">
+        <!-- <a href="#" class="twitter"><i class="bi bi-twitter"></i></a> -->
+        <a href="https://www.facebook.com/npuarc" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="https://arc.npu.ac.th/" class="globe" target="_blank"><i class="bi bi-globe"></i></a>
+        <!-- <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></i></a> -->
+      </div>
+    </div>
+  </section>
+  <!-- ======= Header ======= -->
+  <header id="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center">
+
+      <h1 class="logo me-auto"><a href="{% url 'index2' %}">NPU Green Library </a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo me-auto"><img src="frontend/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto " href="{% url 'index2' %}">หน้าหลัก</a></li>
+          <li class="dropdown"><a href="#"><span>เกี่ยวกับ</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="{% url 'view_pdf' '001' %}">วิสัยทัศน์ พันธกิจ เป้าหมายและยุทธศาสตร์</a></li> 
+              <li><a href="{% url 'view_pdf' '1.1.2' %}">นโยบายการพัฒนาห้องสมุดสีเขียว</a></li>
+              <li><a href="{% url 'view_pdf' '1.1.4' %}">แผนพัฒนาห้องสมุดสีเขียว</a></li>
+              <li><a href="{% url 'view_pdf' '1.1.5' %}">เป้าหมายและตัวชี้วัดการใช้ทรัพยากร</a></li>
+              <li><a href="{% url 'view_pdf' '6.1.1' %}">มาตรการประหยัดน้ำและประหยัดพลังงาน</a></li>
+              <li><a href="#">รายงานผลการดำเนินงาน</a></li>
+              <li><a href="{% url 'view_pdf' '1.2.1' %}">คณะกรรมการห้องสมุดสีเขียว</a></li>
+            </ul>
+          </li>
+          <li><a class="nav-link scrollto" href="{% url 'blog_list'%}">กิจกรรมห้องสมุดสีเขียว</a></li>
+          
+          <li class="dropdown"><a href="#"><span>ผลการดำเนินงาน</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><strong>ผลการดำเนินงาน GL</strong></li>
+              <li><a href="{% url 'view_group_year' 'GL' '2567' %}">ปี 2567</a></li>
+              <li><a href="{% url 'view_group_year' 'GL' '2568' %}">ปี 2568</a></li>
+              <li class="dropdown-divider"></li>
+              <li><strong>ผลการดำเนินงาน GO</strong></li>
+              <li><a href="{% url 'view_group_year' 'GO' '2567' %}">ปี 2567</a></li>
+              <li><a href="{% url 'view_group_year' 'GO' '2568' %}">ปี 2568</a></li>
+            </ul>
+          </li>
+          <li class="dropdown"><a href="#"><span>คลังข้อมูล</span><i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="{% url 'view_document' %}">เอกสาร/ฐานข้อมูล</a></li>
+              <li><a href="{% url 'view_promotional' %}">สื่อประชาสัมพันธ์</a></li>
+              <!--
+              <li><a href="#">Deep Drop Down 3</a></li>
+              <li><a href="#">Deep Drop Down 4</a></li>
+              <li><a href="#">Deep Drop Down 5</a></li>
+                -->
+            </ul>
+          </li>
+            <!-- 
+          <li><a class="nav-link scrollto" href="#team">Team</a></li>
+          
+          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+            <ul>
+              <li><a href="#">Drop Down 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
+                <ul>
+                  <li><a href="#">Deep Drop Down 1</a></li>
+                  <li><a href="#">Deep Drop Down 2</a></li>
+                  <li><a href="#">Deep Drop Down 3</a></li>
+                  <li><a href="#">Deep Drop Down 4</a></li>
+                  <li><a href="#">Deep Drop Down 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Drop Down 2</a></li>
+              <li><a href="#">Drop Down 3</a></li>
+              <li><a href="#">Drop Down 4</a></li>
+            </ul>
+          </li>
+          
+          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          <li><a class="getstarted scrollto" href="#about">Get Started</a></li>
+        </ul> -->
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+  <main id="main">
+    {% block breadcrumbs %}
+      
+    {% endblock %}
+    <div class="container">
+      {% block content %}
+  
+      {% endblock %}
+    </div>
+  </main>
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container">
+      <h3>NPU Green Library</h3>
+      <p>Eco-Friendly Learning Hub: Green Library, Blueprints for Tomorrow.</p>
+      <div class="social-links">
+        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+      </div>
+      <div class="copyright">
+        &copy; 2024 Copyright <strong><span>NPU Green Library</span></strong>. All Rights Reserved
+      </div>
+      <div class="credits">
+         <a href="https://www.djangoproject.com/" target="_blank"></a>Django Framework | Designed by <a href="{% url 'admin:index' %}">azm</a>
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'frontend/assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'frontend/assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'frontend/assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'frontend/assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'frontend/assets/vendor/php-email-form/validate.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'frontend/assets/js/main.js' %}"></script>
+  {% block script %}
+  
+  {% endblock %}
+
+</body>
+
+</html>

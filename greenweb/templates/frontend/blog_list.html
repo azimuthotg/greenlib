@@ -1,0 +1,48 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock%}
+
+{% block breadcrumbs%}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>กิจกรรมทั้งหมด</h2>
+            <!--
+            <ol>
+            <li><a href="{% url 'index2' %}/">หน้าหลัก</a></li>
+            <li>ผลการดำเนินงาน</li>
+            </ol>
+            -->
+        </div>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+
+{% endblock%}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        {% for info in informations %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ info.image1.url }}" class="card-img-top" alt="{{ info.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ info.title }}</h5>
+                    <p class="card-text">วันที่ {{ info.thai_date }} เวลา {{ info.time}}</p>
+                    {% if info.subtitle %}
+                        <p>{{ info.subtitle }}</p>
+                    {% endif %}
+                    <a href="{% url 'blog_detail' info.pk %}" class="btn btn-link">อ่านต่อ</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+<br>
+{% endblock %}

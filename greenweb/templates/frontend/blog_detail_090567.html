@@ -1,0 +1,87 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    NPU Green Library
+{% endblock%}
+
+{% block breadcrumbs%}
+    <!-- ======= Breadcrumbs ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>กิจกรรม</h2>
+            <!--
+            <ol>
+            <li><a href="{% url 'index2' %}/">หน้าหลัก</a></li>
+            <li>ผลการดำเนินงาน</li>
+            </ol>
+            -->
+        </div>
+
+        </div>
+    </section><!-- End Breadcrumbs -->
+
+{% endblock%}
+
+{% block content %}
+<main id="main">
+    <!-- ======= Portfolio Details Section ======= -->
+    <section id="portfolio-details" class="portfolio-details">
+      <div class="container">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-8">
+            <div class="portfolio-details-slider swiper">
+              <div class="swiper-wrapper align-items-center">
+
+                <div class="swiper-slide">
+                    <img src="{% static 'frontend/assets/img/blogs/090567-1.jpg' %}" alt="">
+                </div>
+
+                <div class="swiper-slide">
+                    <img src="{% static 'frontend/assets/img/blogs/090567-2.jpg' %}" alt="">
+                </div>
+
+                <div class="swiper-slide">
+                    <img src="{% static 'frontend/assets/img/blogs/090567-3.jpg' %}" alt="">
+                </div>
+
+                <div class="swiper-slide">
+                    <img src="{% static 'frontend/assets/img/blogs/090567-4.jpg' %}" alt="">
+                </div>
+
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="portfolio-info">
+              <h3>5 ส.</h3>
+              <ul>
+                <li><strong>หมวด</strong>: กิจกรรม </li>
+                <li><strong>กลุ่มเป้าหมาย</strong>: บุคลากร</li>
+                <li><strong>วันที่ </strong>: 9 พฤษภาคม 22567</li>
+                <li><strong>เวลา </strong>: 13.00 - 16.00 น.</li>
+                <li><strong>สถานที่</strong>: ชั้น 5</li>
+              </ul>
+            </div>
+            <div class="portfolio-description">
+              <h2> สำนักวิทยบริการ จัดกิจกรรม 5ส.</h2>
+              <p>
+                📌 วันพฤหัสบดีที่ 9 พฤษภาคม 2567 เวลา 13:30น. ผู้บริหารและบุคลากร สำนักวิทยบริการ ร่วมแรงร่วมใจกันจัดกิจกรรม 5ส. สะสาง สะดวก สะอาด สุขลักษณะ และสร้างนิสัย ที่บริเวณชั้น 5 สำนักวิทยบริการ โดยทำความสะอาดพื้นและกระจกหน้าต่าง เก็บสิ่งของให้เป็นระเบียบเรียบร้อย          
+
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Portfolio Details Section -->
+
+  </main><!-- End #main -->
+{% endblock %}
