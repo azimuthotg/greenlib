@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'docChecker',
     'info_graph',
     'promotional',
+    'resources',
     'django_filters',
 ]
 

@@ -1,0 +1,498 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - NPU Green Library{% endblock %}
+
+{% block style %}
+<style>
+.gallery-section {
+    padding: 40px 0;
+}
+
+.gallery-header {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.gallery-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.gallery-subtitle {
+    color: rgba(255,255,255,0.9);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.filters-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+.filter-label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2e7d32;
+    display: block;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-btn {
+    background: #fff;
+    color: #2e7d32;
+    border: 2px solid #2e7d32;
+    padding: 6px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: #2e7d32;
+    color: white;
+    text-decoration: none;
+}
+
+.filter-btn.clear {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.filter-btn.clear:hover {
+    background: #5a6268;
+    border-color: #5a6268;
+}
+
+.gallery-stats {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.gallery-item {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.image-wrapper {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .image-wrapper img {
+    transform: scale(1.1);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff9800;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.category-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(46, 125, 50, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 20px 15px 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .image-overlay {
+    opacity: 1;
+}
+
+.item-info {
+    padding: 15px;
+}
+
+.item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.item-desc {
+    color: #666;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.item-tags {
+    margin-top: 8px;
+}
+
+.tag {
+    display: inline-block;
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    margin-right: 5px;
+    margin-bottom: 3px;
+}
+
+.pagination-wrapper {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.pagination {
+    display: inline-flex;
+    justify-content: center;
+}
+
+.pagination .page-link {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.back-link:hover {
+    color: #1b5e20;
+    text-decoration: none;
+}
+
+.no-images {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.no-images i {
+    font-size: 3rem;
+    color: #ccc;
+    margin-bottom: 20px;
+    display: block;
+}
+
+@media (max-width: 992px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+    }
+    
+    .gallery-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .filters-section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        font-size: 0.8rem;
+        padding: 5px 12px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ page_title }}</h2>
+            <ol>
+                <li><a href="{% url 'promotional:list' %}">สื่อประชาสัมพันธ์</a></li>
+                <li>แกลเลอรี่ทั้งหมด</li>
+            </ol>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="gallery-section">
+    <div class="container">
+        
+
+
+        <!-- ระบบกรอง -->
+        <div class="filters-section">
+            <!-- กรองตามหมวดหมู่ -->
+            <div class="filter-group">
+                <span class="filter-label">
+                    <i class="bi bi-funnel"></i> กรองตามหมวดหมู่
+                </span>
+                <div class="filter-buttons">
+                    <a href="{% url 'promotional:gallery' %}" 
+                       class="filter-btn {% if not selected_category %}active{% endif %}">
+                        ทั้งหมด
+                    </a>
+                    {% for category in categories %}
+                    <a href="{% url 'promotional:gallery' %}?category={{ category.id }}" 
+                       class="filter-btn {% if selected_category == category.id|stringformat:'s' %}active{% endif %}">
+                        {{ category.name_th }} ({{ category.total_images }})
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- กรองตามแท็ก -->
+            {% if popular_tags %}
+            <div class="filter-group">
+                <span class="filter-label">
+                    <i class="bi bi-tags"></i> แท็กยอดนิยม
+                </span>
+                <div class="filter-buttons">
+                    {% for tag in popular_tags %}
+                    <a href="{% url 'promotional:gallery' %}?tag={{ tag }}" 
+                       class="filter-btn {% if selected_tag == tag %}active{% endif %}">
+                        #{{ tag }}
+                    </a>
+                    {% endfor %}
+                    {% if selected_tag %}
+                    <a href="{% url 'promotional:gallery' %}" class="filter-btn clear">
+                        <i class="bi bi-x"></i> ล้างตัวกรอง
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- สถิติการแสดงผล -->
+        <div class="gallery-stats">
+            {% if selected_category or selected_tag %}
+                {% if selected_category %}
+                    {% for category in categories %}
+                        {% if category.id|stringformat:'s' == selected_category %}
+                            กรองตามหมวด: <strong>{{ category.name_th }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                    {% if selected_tag %} และ {% endif %}
+                {% endif %}
+                {% if selected_tag %}
+                    กรองตามแท็ก: <strong>#{{ selected_tag }}</strong>
+                {% endif %}
+                <br>
+            {% endif %}
+            แสดงผล {{ images|length }} รูป{% if images.has_other_pages %} จากทั้งหมด {{ images.paginator.count }} รูป{% endif %}
+        </div>
+
+        {% if images %}
+        <!-- แกลเลอรี่รูปภาพ -->
+        <div class="gallery-grid">
+            {% for image in images %}
+            <div class="gallery-item" onclick="openImageModal('{{ image.image.url }}', '{{ image.title }}', '{{ image.description|default:'' }}', '{{ image.category.name_th }}')">
+                <div class="image-wrapper">
+                    <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:image.title }}" loading="lazy">
+                    {% if image.is_featured %}
+                    <div class="featured-badge">เด่น</div>
+                    {% endif %}
+                    <div class="category-badge">{{ image.category.name_th }}</div>
+                    <div class="image-overlay">
+                        <strong>{{ image.title }}</strong>
+                        {% if image.description %}
+                        <br><small>{{ image.description|truncatechars:60 }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="item-info">
+                    <div class="item-title">{{ image.title }}</div>
+                    {% if image.description %}
+                    <div class="item-desc">{{ image.description|truncatechars:80 }}</div>
+                    {% endif %}
+                    {% if image.tag_list %}
+                    <div class="item-tags">
+                        {% for tag in image.tag_list %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if images.has_other_pages %}
+        <div class="pagination-wrapper">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if images.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_tag %}tag={{ selected_tag }}&{% endif %}page={{ images.previous_page_number }}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in images.paginator.page_range %}
+                    {% if images.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > images.number|add:'-3' and num < images.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_tag %}tag={{ selected_tag }}&{% endif %}page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if images.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_tag %}tag={{ selected_tag }}&{% endif %}page={{ images.next_page_number }}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- ไม่มีรูปภาพ -->
+        <div class="no-images">
+            <i class="bi bi-images"></i>
+            <h4>ไม่พบรูปภาพ</h4>
+            {% if selected_category or selected_tag %}
+            <p>ลองเปลี่ยนเงื่อนไขการค้นหา หรือ <a href="{% url 'promotional:gallery' %}">ดูทั้งหมด</a></p>
+            {% else %}
+            <p>ยังไม่มีรูปภาพสื่อประชาสัมพันธ์</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Modal สำหรับแสดงรูปภาพ -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="imageModalImg" class="img-fluid" style="max-height: 80vh;">
+                <div class="mt-3">
+                    <span id="imageModalCategory" class="badge bg-success"></span>
+                </div>
+                <p id="imageModalDescription" class="mt-3 text-muted"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openImageModal(imageUrl, title, description, category) {
+    document.getElementById('imageModalImg').src = imageUrl;
+    document.getElementById('imageModalTitle').textContent = title;
+    document.getElementById('imageModalDescription').textContent = description || 'ไม่มีคำอธิบาย';
+    document.getElementById('imageModalCategory').textContent = category;
+    new bootstrap.Modal(document.getElementById('imageModal')).show();
+}
+</script>
+{% endblock %}

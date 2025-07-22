@@ -24,6 +24,7 @@ urlpatterns = [
     path('web/', include('greenweb.urls')),
     path('info_graph/', include('info_graph.urls')),
     path('promotional/', include('promotional.urls')),
+    path('resources/', include('resources.urls')),
     path('', include('indexweb.urls')),
 ]
 

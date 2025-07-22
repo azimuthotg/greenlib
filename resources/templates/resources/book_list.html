@@ -1,0 +1,185 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - NPU Green Library{% endblock %}
+
+{% block style %}
+<style>
+.resources-section { padding: 40px 0; }
+.filters-section { background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 30px; }
+.filter-group { margin-bottom: 15px; }
+.filter-label { font-weight: 600; color: #2e7d32; display: block; margin-bottom: 8px; }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter-btn { background: #fff; color: #2e7d32; border: 2px solid #2e7d32; padding: 6px 15px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; }
+.filter-btn:hover, .filter-btn.active { background: #2e7d32; color: white; text-decoration: none; }
+.search-box { background: #fff; padding: 20px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 30px; margin-bottom: 40px; }
+.book-card { background: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; min-height: 200px; }
+.book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.book-header { padding: 20px; border-bottom: 1px solid #eee; flex-grow: 1; }
+.book-title { font-weight: 600; color: #333; margin-bottom: 12px; line-height: 1.4; font-size: 1.05rem; }
+.book-meta { color: #666; font-size: 0.9rem; margin-top: auto; }
+.book-body { padding: 20px; flex-grow: 1; }
+.book-desc { color: #666; font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px; }
+.book-footer { padding: 20px; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+.type-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+.type-badge.ebook { background: #e3f2fd; color: #1976d2; }
+.type-badge.book { background: #e8f5e8; color: #2e7d32; }
+.type-badge.journal { background: #fff3e0; color: #f57c00; }
+.type-badge.research { background: #fce4ec; color: #c2185b; }
+.type-badge.reference { background: #f3e5f5; color: #7b1fa2; }
+.opac-link { color: #2e7d32; text-decoration: none; font-weight: 500; }
+.opac-link:hover { color: #1b5e20; text-decoration: underline; }
+.featured-section { background: linear-gradient(135deg, #2e7d32, #43a047); color: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; }
+.featured-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
+.featured-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; }
+.stats-info { text-align: center; margin-bottom: 20px; color: #666; }
+.pagination-wrapper { text-align: center; margin-top: 40px; }
+.pagination .page-link { color: #2e7d32; border-color: #2e7d32; }
+.pagination .page-item.active .page-link { background-color: #2e7d32; border-color: #2e7d32; }
+@media (max-width: 768px) {
+  .book-grid { grid-template-columns: 1fr; }
+  .featured-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<section class="breadcrumbs">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>{{ page_title }}</h2>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="resources-section">
+  <div class="container">
+    
+    <!-- หนังสือแนะนำ -->
+    {% if featured_books %}
+    <div class="featured-section">
+      <h3><i class="bi bi-star-fill"></i> หนังสือแนะนำ</h3>
+      <div class="featured-grid">
+        {% for book in featured_books %}
+        <div class="featured-card">
+          <strong>{{ book.title }}</strong><br>
+          <small>{{ book.call_number|default:"-" }} • {{ book.resource_type.name }}</small>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ค้นหา -->
+    <div class="search-box">
+      <form method="GET" class="row g-3">
+        <div class="col-md-8">
+          <input type="text" class="form-control" name="q" value="{{ search_query }}" placeholder="ค้นหาชื่อหนังสือ ผู้แต่ง เลขหมู่ หรือคำอธิบาย...">
+        </div>
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-search"></i> ค้นหา
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ตัวกรอง -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <span class="filter-label">ประเภทผลิตสื่อ</span>
+        <div class="filter-buttons">
+          <a href="{% url 'resources:list' %}" class="filter-btn {% if not selected_type %}active{% endif %}">ทั้งหมด</a>
+          {% for type in resource_types %}
+          <a href="{% url 'resources:list' %}?type={{ type.id }}" 
+             class="filter-btn {% if selected_type == type.id|stringformat:'s' %}active{% endif %}">
+            {{ type.name }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- สถิติ -->
+    <div class="stats-info">
+      แสดงผล {{ books|length }} รายการ{% if page_obj.has_other_pages %} จากทั้งหมด {{ total_books }} รายการ{% endif %}
+    </div>
+
+    <!-- รายการหนังสือ -->
+    <div class="book-grid">
+      {% for book in books %}
+      <div class="book-card">
+        <div class="book-header">
+          <div class="book-title">{{ book.title }}</div>
+          <div class="book-meta">
+            {% if book.call_number %}<strong>เลขหมู่:</strong> {{ book.call_number }}<br>{% endif %}
+            {% if book.publication_info %}<strong>การพิมพ์:</strong> {{ book.publication_info }}{% endif %}
+          </div>
+        </div>
+        
+        {% if book.description %}
+        <div class="book-body">
+          <div class="book-desc">{{ book.description|truncatechars:150 }}</div>
+        </div>
+        {% endif %}
+
+        <div class="book-footer">
+          <span class="type-badge {% if book.resource_type.name == 'E-book' %}ebook{% elif book.resource_type.name == 'หนังสือ' %}book{% elif book.resource_type.name == 'วารสาร' %}journal{% elif book.resource_type.name == 'รายงานการวิจัย' %}research{% elif book.resource_type.name == 'เอกสารอ้างอิง' %}reference{% endif %}">{{ book.resource_type.name }}</span>
+          {% if book.primary_link %}
+          <a href="{{ book.primary_link }}" target="_blank" class="opac-link">
+            <i class="bi bi-link-45deg"></i> ดูรายละเอียด
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-book" style="font-size: 3rem; color: #ccc;"></i>
+        <h4 class="mt-3">ไม่พบหนังสือ</h4>
+        <p class="text-muted">ลองเปลี่ยนเงื่อนไขการค้นหา</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination-wrapper">
+      <nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}{% if selected_subject %}subject={{ selected_subject }}&{% endif %}page={{ page_obj.previous_page_number }}">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          {% endif %}
+          
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}{% if selected_subject %}subject={{ selected_subject }}&{% endif %}page={{ num }}">{{ num }}</a>
+          </li>
+          {% endif %}
+          {% endfor %}
+          
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if search_query %}q={{ search_query }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}{% if selected_subject %}subject={{ selected_subject }}&{% endif %}page={{ page_obj.next_page_number }}">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
