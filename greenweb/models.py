@@ -1,4 +1,7 @@
+import os
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from category.models import Category
 
 class Task(models.Model):
@@ -59,3 +62,9 @@ class Evidence(models.Model):
 
     def __str__(self):
         return self.evidence_name
+
+@receiver(post_delete, sender=Evidence)
+def delete_evidence_file(sender, instance, **kwargs):
+    if instance.evidence_file:
+        if os.path.isfile(instance.evidence_file.path):
+            os.remove(instance.evidence_file.path)

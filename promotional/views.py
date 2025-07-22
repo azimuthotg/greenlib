@@ -9,8 +9,8 @@ def promotional_list(request):
     
     # เพิ่มข้อมูลรูปภาพเด่นสำหรับแต่ละหมวดหมู่
     for category in categories:
-        category.featured_images = category.images.filter(is_active=True, is_featured=True)[:4]
-        category.latest_images = category.images.filter(is_active=True).order_by('-created_at')[:6]
+        category.featured_images = category.images.filter(is_active=True, is_featured=True)[:5]
+        category.latest_images = category.images.filter(is_active=True).order_by('display_order', '-created_at')[:10]
     
     context = {
         'categories': categories,
