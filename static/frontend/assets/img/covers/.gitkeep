@@ -1,0 +1,9 @@
+# This directory stores default cover images for different media types:
+# - default-book.png (หนังสือ)
+# - default-ebook.png (E-book) 
+# - default-journal.png (วารสาร)
+# - default-research.png (รายงานการวิจัย)
+# - default-reference.png (เอกสารอ้างอิง)
+# - default-media.png (อื่นๆ)
+#
+# Also stores uploaded cover images from users

@@ -24,10 +24,11 @@ class BookAdmin(admin.ModelAdmin):
     list_display = (
         'order_number',
         'short_title_display',
-        'author',
+        'call_number_display',
         'resource_type',
-        'call_number',
+        'audit_year',
         'publication_year',
+        'cover_preview',
         'external_links',
         'is_featured',
         'is_available'
@@ -36,6 +37,7 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = (
         'resource_type',
         'subject',
+        'audit_year',
         'is_featured',
         'is_available',
         'is_active',
@@ -84,9 +86,18 @@ class BookAdmin(admin.ModelAdmin):
             )
         }),
         
+        ('รูปหน้าปก', {
+            'fields': (
+                'cover_image',
+                'cover_image_url'
+            ),
+            'description': 'อัปโหลดรูปโดยตรง หรือใส่ URL ของรูปจากเว็บไซต์อื่น'
+        }),
+        
         ('การจัดการ', {
             'fields': (
                 'order_number',
+                'audit_year',
                 'is_featured',
                 'is_available',
                 'is_active'
@@ -98,6 +109,31 @@ class BookAdmin(admin.ModelAdmin):
         """แสดงชื่อเรื่องย่อ"""
         return obj.short_title
     short_title_display.short_description = 'ชื่อเรื่อง'
+    
+    def call_number_display(self, obj):
+        """แสดงเลขหมู่จากฟิลด์ author (เพราะข้อมูลถูกเก็บผิดที่)"""
+        return obj.author or '-'
+    call_number_display.short_description = 'เลขหมู่'  # ชื่อ header คอลัมน์
+    
+    def cover_preview(self, obj):
+        """แสดงรูปหน้าปกขนาดเล็ก"""
+        if obj.cover_image:
+            return format_html(
+                '<img src="{}" style="width: 40px; height: 50px; object-fit: cover; border-radius: 3px;" title="รูปอัปโหลด"/>',
+                obj.cover_image.url
+            )
+        elif obj.cover_image_url:
+            return format_html(
+                '<img src="{}" style="width: 40px; height: 50px; object-fit: cover; border-radius: 3px;" title="รูปจาก URL" onerror="this.src=\'{}\'"/>',
+                obj.cover_image_url,
+                obj.get_default_cover()
+            )
+        else:
+            return format_html(
+                '<img src="{}" style="width: 40px; height: 50px; object-fit: cover; border-radius: 3px; opacity: 0.5;" title="รูป Default"/>',
+                obj.get_default_cover()
+            )
+    cover_preview.short_description = 'หน้าปก'
     
     def external_links(self, obj):
         """แสดงลิงก์ภายนอก"""

@@ -16,6 +16,11 @@ def book_list(request):
     if resource_type_id:
         books = books.filter(resource_type_id=resource_type_id)
     
+    # กรองตามปีนำเข้า audit
+    audit_year = request.GET.get('audit_year')
+    if audit_year:
+        books = books.filter(audit_year=audit_year)
+    
     # กรองตามหมวดเรื่อง
     subject_id = request.GET.get('subject')
     if subject_id:
@@ -43,6 +48,13 @@ def book_list(request):
     resource_types = ResourceType.objects.filter(is_active=True)
     subjects = Subject.objects.filter(is_active=True)
     
+    # ปีนำเข้าที่มีข้อมูล
+    audit_years = Book.objects.filter(
+        is_active=True, 
+        is_available=True,
+        audit_year__isnull=False
+    ).values_list('audit_year', flat=True).distinct().order_by('-audit_year')
+    
     # หนังสือแนะนำ
     featured_books = Book.objects.filter(
         is_active=True, 
@@ -55,10 +67,12 @@ def book_list(request):
         'books': page_obj,
         'resource_types': resource_types,
         'subjects': subjects,
+        'audit_years': audit_years,
         'featured_books': featured_books,
         'search_query': search_query,
         'selected_type': resource_type_id,
         'selected_subject': subject_id,
+        'selected_audit_year': audit_year,
         'page_title': 'ทรัพยากรสารสนเทศด้านสิ่งแวดล้อม',
         'total_books': paginator.count,
     }

@@ -1,5 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.core.files.storage import default_storage
+from django.templatetags.static import static
+import os
 
 
 class ResourceType(models.Model):
@@ -68,7 +71,12 @@ class Book(models.Model):
     is_available = models.BooleanField(default=True, verbose_name="มีให้บริการ")
     is_active = models.BooleanField(default=True, verbose_name="ใช้งาน")
     
+    # รูปปก
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True, verbose_name="รูปหน้าปก")
+    cover_image_url = models.URLField(blank=True, null=True, verbose_name="ลิงก์รูปหน้าปก")
+    
     # วันที่
+    audit_year = models.PositiveIntegerField(blank=True, null=True, verbose_name="ปีที่นำเข้าข้อมูล")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="วันที่เพิ่ม")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="วันที่แก้ไข")
     
@@ -113,3 +121,29 @@ class Book(models.Model):
     def primary_link(self):
         """ลิงก์หลักที่ใช้"""
         return self.opac_url or self.external_url
+    
+    @property
+    def cover_image_display(self):
+        """รูปหน้าปกที่จะแสดง (อัปโหลด > URL > Default)"""
+        if self.cover_image:
+            return self.cover_image.url
+        elif self.cover_image_url:
+            return self.cover_image_url
+        else:
+            return self.get_default_cover()
+    
+    def get_default_cover(self):
+        """รูป default ตามประเภทสื่อ"""
+        # ใช้รูปที่มีอยู่แล้วในระบบ หรือ fallback เป็น placeholder ใหม่
+        try:
+            return static('frontend/assets/img/covers/placeholder.svg')
+        except:
+            # Fallback ใช้รูปที่มีอยู่แล้ว
+            return static('frontend/assets/img/about.jpg')
+    
+    def delete(self, *args, **kwargs):
+        """ลบไฟล์รูปเมื่อลบ record"""
+        if self.cover_image:
+            if os.path.isfile(self.cover_image.path):
+                os.remove(self.cover_image.path)
+        super().delete(*args, **kwargs)
